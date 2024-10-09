@@ -1,0 +1,54 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>XML Book Catalogue</title>  
+</head>  
+<body>  
+    <h1>Book Catalogue</h1>  
+    <div id="book-list"></div>  
+  
+    <script>  
+        // XML files in the same directory as HTML files  
+        const xmlUrl = 'book.xml';  
+  
+        fetch(xmlUrl)  
+            .then(response => {  
+                if (!response.ok) {  
+                    throw new Error('Network response was not ok');  
+                }  
+                return response.text();  
+            })  
+            .then(xmlText => {  
+                // Parsing XML strings  
+                const parser = new DOMParser();  
+                const xmlDoc = parser.parseFromString(xmlText, 'text/xml');  
+  
+                // Get the list of books and iterate through it 
+                const books = xmlDoc.getElementsByTagName('book');  
+                const bookListDiv = document.getElementById('book-list');  
+  
+                for (let i = 0; i < books.length; i++) {  
+                    const book = books[i];  
+                    const title = book.getElementsByTagName('title')[0].textContent;  
+                    const author = book.getElementsByTagName('author')[0].textContent;  
+                    const price = book.getElementsByTagName('price')[0].textContent;  
+  
+                    // cCreating book information elements and adding them to the page  
+                    const bookInfo = document.createElement('div');  
+                    bookInfo.classList.add('book-info');  
+                    bookInfo.innerHTML = `  
+                        <h2>${title}</h2>  
+                        <p>Author: ${author}</p>  
+                        <p>Price: $${price}</p>  
+                    `;  
+                    bookListDiv.appendChild(bookInfo);  
+                }  
+            })  
+            .catch(error => {  
+                console.error('There has been a problem with your fetch operation:', error);  
+            });  
+    </script>  
+</body>  
+</html>
